@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
+use App\Models\Category;
+ 
 use App\Http\Requests\UpdateProductRequest;
 use Inertia\Inertia;
+
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -17,25 +20,33 @@ class ProductController extends Controller
     public function index()
     {
 
-        $products = Product::with('category')->get();
-        
+        $products = Product::with('category')
+        ->latest('id')
+        ->paginate(10);
+     
        return Inertia::render('products/index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
-        //
+
+        $categories = Category::all();
+        
+        return Inertia::render('products/create', compact('categories'));
     }
 
      
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        //
+        $data =  $request->validate([
+            'name' => 'required|max:30',
+            'description' => 'required|max:100',
+            'price' => 'required|numeric',
+            'category_id' => 'required' ,
+        ]);
+        $product = Product::create($data);
+        return redirect()->route('products.edit', $product);
     }
 
      
@@ -47,14 +58,24 @@ class ProductController extends Controller
      
     public function edit(Product $product)
     {
-        
-        return Inertia::render('products/edit', compact('product'));
+        $categories = Category::all();
+        return Inertia::render('products/edit', compact('product', 'categories'));
     }
 
     
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update( Request $request, Product $product)
     {
-        //
+        $data =  $request->validate([
+            'name' => 'required|max:30',
+            'description' => 'required|max:100',
+            'price' => 'required|numeric',
+            'category_id' => 'required' ,
+        ]);
+
+      
+
+       $product->update($data);
+       return redirect()->route('products.edit', $product);
     }
 
     /**
@@ -65,6 +86,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('products.index');
+        
     }
 }
