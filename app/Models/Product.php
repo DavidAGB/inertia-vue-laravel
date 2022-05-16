@@ -17,11 +17,21 @@ class Product extends Model
 
 
 
-    const SEARCHABLE_FIELDS = ['name', 'decription', 'price'];
+    //const SEARCHABLE_FIELDS = ['name', 'decription', 'price'];
 
     public function toSearchableArray()
     {
-        return $this->only(attributes: self::SEARCHABLE_FIELDS);
+      //  return $this->only(attributes self::SEARCHABLE_FIELDS);
+      return  [
+        'name' => $this->name,
+        'description' => $this->description,
+        'price' => $this->price,
+        'category_name' => $this->category->name,
+        'redirect' => "/products/$this->id/edit"
+
+         
+         
+      ];
     }
 
     //query scope

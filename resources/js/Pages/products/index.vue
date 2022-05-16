@@ -5,71 +5,131 @@ import { Head, Link } from "@inertiajs/inertia-vue3";
 import Pagination from "../shared/pagination.vue";
 import Input from "@/Jetstream/Input.vue";
 import pickBy from "lodash/pickBy";
+import algoliasearch from "algoliasearch/lite";
+import "instantsearch.css/themes/algolia-min.css";
 
+import "instantsearch.css/themes/algolia-min.css";
+import VueInstantSearch from 'vue-instantsearch/vue3/es';
 </script>
 
 <template>
-  <AppLayout title="Products"  >
-
-  <header class="bg-gray-900 shadow">
-
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between">
-         <h1 class=" text-xl    font-semibold text-emerald-500">Products</h1>
-<div class="text-sm">
-   <Link
-            :href="route('products.create')"
-            class="
-              inline-flex
-              justify-center
-              py-2
-              px-4
-              border border-transparent
-              shadow-sm
-              text-sm
-              font-medium
-              rounded-md
-              text-white
-              bg-emerald-600
-              hover:bg-emerald-700
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-emerald-500
-            "
-          >
-            New product
-          </Link>
-</div>
+  <AppLayout title="Products">
+    <header class="bg-gray-900 shadow">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+          <h1 class="text-xl font-semibold text-emerald-500">Products</h1>
+          <div class="text-sm">
+            <Link
+              :href="route('products.create')"
+              class="
+                inline-flex
+                justify-center
+                py-2
+                px-4
+                border border-transparent
+                shadow-sm
+                text-sm
+                font-medium
+                rounded-md
+                text-white
+                bg-emerald-600
+                hover:bg-emerald-700
+                focus:outline-none
+                focus:ring-2
+                focus:ring-offset-2
+                focus:ring-emerald-500
+              "
+            >
+              New product
+            </Link>
+          </div>
+        </div>
       </div>
-     </div>
-    
-  </header>
-
-
-
-     
+    </header>
 
     <div class="py-12">
+
+      <div class=" ">
+
+        <ais-instant-search :search-client="searchClient" index-name="products">
+
+ 
+
+          <ais-search-box placeholder="Search contacts..." >
+            
+          </ais-search-box>
+          
+
+          <ais-hits>
+            <template v-slot:item="{ item }" class="mt-4">
+             <Link :href="item.redirect">
+              <h1>
+                
+                   <ais-highlight :hit="item" attribute="name" />-
+                
+               
+              </h1>
+              <h4>
+                <ais-highlight :hit="item" attribute="category_name" /> -
+                <ais-highlight :hit="item" attribute="state" />
+              </h4>
+
+              <ul>
+                <li>{{ item.price }}</li>
+                
+                
+              </ul>
+               </Link>
+            </template>
+          </ais-hits>
+        </ais-instant-search>
+
+      </div>
+
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="overflow-hidden shadow-xl sm:rounded-lg">
-
           <div>
-           
-        <section class="relative w-full max-w-md px-5 py-4 mx-auto rounded-md">
-            <div class="relative">
+            <section
+              class="relative w-full max-w-md px-5 py-4 mx-auto rounded-md"
+            >
+              <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </svg>
                 </span>
- 
-                <input type="text" v-model="search" class="w-full py-3 pl-10 pr-4 text-gray-200 bg-gray-700 border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-500 focus:outline-none focus:ring" placeholder="Search">
-            </div>
 
-             
-        </section>
-
+                <input 
+                  type="text"
+                  v-model="search"
+                  class="
+                    w-full
+                    py-3
+                    pl-10
+                    pr-4
+                    text-gray-200
+                    bg-gray-700
+                    border
+                    rounded-md
+                    dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600
+                    focus:border-emerald-500
+                    dark:focus:border-emerald-500
+                    focus:outline-none focus:ring
+                  "
+                  placeholder="Search"
+                />
+              </div>
+            </section>
           </div>
 
           <table
@@ -168,38 +228,43 @@ import pickBy from "lodash/pickBy";
         </div>
       </div>
     </div>
-
-      
   </AppLayout>
-  
 </template>
 
 
 <script>
 export default {
-  components: [Pagination, Input],
+  components: [Pagination, Input, algoliasearch],
 
-   
-   data() {
-     return {
-       search: this.filters.search,
-     }
-   },
+  data() {
+    return {
+      search: this.filters.search,
+
+      searchClient: algoliasearch(
+        "V6O0VJ6JOE",
+        "901d46fbc51248e14b839250098d29db"
+      ),
+    };
+  },
 
   props: {
     products: [],
-    filters: Object
-     
-      
+    filters: Object,
   },
 
-  watch:{
-    search($value){
-         this.$inertia.get('/products', pickBy({search : $value }), {preserveState : true}) 
-    }
-  }
- 
+  watch: {
+    search($value) {
+      this.$inertia.get("/products", pickBy({ search: $value }), {
+        preserveState: true,
+      });
+    },
+  },
 };
-
 </script>
+
+
+<style>
+
+
+</style>
 
