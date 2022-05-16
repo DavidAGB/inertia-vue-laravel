@@ -4,6 +4,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,9 @@ Route::middleware([
 
     Route::get('/products', [ ProductController::class, 'index'] )->name('products.index');
 
+    
+
+
     Route::get('/products/create', [ ProductController::class, 'create'] )->name('products.create');
 
     Route::post('products', [ ProductController::class, 'store'] )->name('products.store');
@@ -46,6 +50,8 @@ Route::middleware([
 
     Route::delete('products/{product}', [ ProductController::class, 'destroy'] )->name('products.destroy');
 
+    Route::get('/search', [ SearchController::class, 'search'] )->name('home.search');
+     
 
 });
 

@@ -13,18 +13,18 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
   </div>
   <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
     <div>
-      <p class="text-sm text-gray-700">
+      <p class="text-sm text-gray-200">
         Showing
-        <span class="font-medium">1</span>
+        <span class="font-medium">{{pagination.from}}</span>
         to
-        <span class="font-medium">10</span>
+        <span class="font-medium">{{pagination.to}}</span>
         of
         <span class="font-medium">97</span>
         results
       </p>
     </div>
     <div>
-      <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px bg-gray-700" aria-label="Pagination">
+      <nav v-if="pagination.links.length > 3" class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px bg-gray-700" aria-label="Pagination">
 
  
           
